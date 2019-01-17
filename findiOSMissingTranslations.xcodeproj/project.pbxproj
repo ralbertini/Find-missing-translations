@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F81AF1C421E7B7E20071BE63 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81AF1C321E7B7E20071BE63 /* main.swift */; };
+		F8B677C821F0DF30000F3E48 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B677C721F0DF30000F3E48 /* Files.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		F81AF1C021E7B7E20071BE63 /* findiOSMissingTranslations */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = findiOSMissingTranslations; sourceTree = BUILT_PRODUCTS_DIR; };
 		F81AF1C321E7B7E20071BE63 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		F8B677C721F0DF30000F3E48 /* Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				F81AF1C321E7B7E20071BE63 /* main.swift */,
+				F8B677C721F0DF30000F3E48 /* Files.swift */,
 			);
 			path = findiOSMissingTranslations;
 			sourceTree = "<group>";
@@ -121,6 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F81AF1C421E7B7E20071BE63 /* main.swift in Sources */,
+				F8B677C821F0DF30000F3E48 /* Files.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
