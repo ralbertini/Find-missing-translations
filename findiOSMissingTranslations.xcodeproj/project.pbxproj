@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		F81AF1C421E7B7E20071BE63 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81AF1C321E7B7E20071BE63 /* main.swift */; };
+		F886EB31220377BB00CF50AC /* StringFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F886EB30220377BB00CF50AC /* StringFilesManager.swift */; };
+		F886EB33220377FD00CF50AC /* FileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F886EB32220377FD00CF50AC /* FileReader.swift */; };
 		F8B677C821F0DF30000F3E48 /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B677C721F0DF30000F3E48 /* Files.swift */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +28,8 @@
 /* Begin PBXFileReference section */
 		F81AF1C021E7B7E20071BE63 /* findiOSMissingTranslations */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = findiOSMissingTranslations; sourceTree = BUILT_PRODUCTS_DIR; };
 		F81AF1C321E7B7E20071BE63 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		F886EB30220377BB00CF50AC /* StringFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFilesManager.swift; sourceTree = "<group>"; };
+		F886EB32220377FD00CF50AC /* FileReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileReader.swift; sourceTree = "<group>"; };
 		F8B677C721F0DF30000F3E48 /* Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,6 +65,8 @@
 			children = (
 				F81AF1C321E7B7E20071BE63 /* main.swift */,
 				F8B677C721F0DF30000F3E48 /* Files.swift */,
+				F886EB30220377BB00CF50AC /* StringFilesManager.swift */,
+				F886EB32220377FD00CF50AC /* FileReader.swift */,
 			);
 			path = findiOSMissingTranslations;
 			sourceTree = "<group>";
@@ -124,6 +130,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F81AF1C421E7B7E20071BE63 /* main.swift in Sources */,
+				F886EB31220377BB00CF50AC /* StringFilesManager.swift in Sources */,
+				F886EB33220377FD00CF50AC /* FileReader.swift in Sources */,
 				F8B677C821F0DF30000F3E48 /* Files.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
