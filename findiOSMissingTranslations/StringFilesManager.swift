@@ -1,5 +1,5 @@
 //
-//  StringManipulation.swift
+//  StringFilesManager
 //  DiffTranslations
 //
 //  Created by Ronaldo Albertini on 09/01/19.
@@ -19,7 +19,7 @@ class StringFilesManager: NSObject {
     private func getAllStringFiles() {
         
         let folder:Folder = Folder.current
-        print(folder.description)
+
         folder.makeFileSequence(recursive: true, includeHidden: false).forEach { file in
             if let ext = file.extension, ext == "strings" {
                 stringFiles.append(file)
@@ -56,15 +56,15 @@ class StringFilesManager: NSObject {
         return lineTuple
     }
     
-    private func rodarPorNomesArquivos(arquivos: [File]) {
+    private func compareFileContent(filesToCompare: [File]) {
         
         let folder = Folder.current
         
         guard let missingFolder = try? folder.createSubfolderIfNeeded(withName: "missingTranslations") else { return }
         
-        for f1 in arquivos {
+        for f1 in filesToCompare {
             
-            for f2 in arquivos {
+            for f2 in filesToCompare {
                 
                 if f2.path != f1.path {
                     
@@ -75,16 +75,19 @@ class StringFilesManager: NSObject {
                     firstfileKeys = stringKeys(file: file1)
                     secondFileKeys = stringKeys(file: file2)
                     
-                    let fil:File?
-                    
-                    if let parent1 = f1.parent?.name.components(separatedBy: "/").first, let parent2 = f2.parent?.name.components(separatedBy: "/").first {
-                        print("\(parent1) to \(parent2)")
+                    if let parent1 = f1.parent?.name.components(separatedBy: "/").first?.components(separatedBy: ".").first
+                        , let parent2 = f2.parent?.name.components(separatedBy: "/").first?.components(separatedBy: ".").first {
                         
-                        fil = try! missingFolder.createFile(named: "\(parent1) to \(parent2).txt")
+                        guard let fil = try? missingFolder.createFile(named: "\(f1.name.components(separatedBy: ".").first ?? "Translate")_\(parent1.uppercased())_to_\(parent2.uppercased()).txt") else { return }
                         
                         for line in self.getMissingLines(firstFileKeys: firstfileKeys, secondFileKeys: secondFileKeys) {
-                            try! fil?.append(string: "\(line.key) = \(line.value)")
-                            print("\(line.key) = \(line.value)")
+                            
+                            do {
+                                try fil.append(string: "\(line.key) = \(line.value)")
+                                print("\(line.key) = \(line.value)")
+                            } catch {
+                                print("Problems to write on file")
+                            }
                         }
                     }
                 }
@@ -99,20 +102,21 @@ class StringFilesManager: NSObject {
         var missingTranslations: Dictionary<String, String> = Dictionary<String, String>()
         
         for key in missingKeys {
-            missingTranslations[key] = firstFileKeys[key]
             
+            missingTranslations[key] = firstFileKeys[key]
         }
+        
         return missingTranslations
     }
     
     
-    public func teste() {
+    public func run() {
         
         self.getAllStringFiles()
         self.findSameFiles()
         
         for files in self.sameFiles {
-            self.rodarPorNomesArquivos(arquivos: files.value)
+            self.compareFileContent(filesToCompare: files.value)
         }
     }
 }
