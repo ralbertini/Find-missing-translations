@@ -60,7 +60,7 @@ class StringFilesManager: NSObject {
         
         let folder = Folder.current
         
-        try! folder.createSubfolderIfNeeded(withName: "missingTranslations")
+        guard let missingFolder = try? folder.createSubfolderIfNeeded(withName: "missingTranslations") else { return }
         
         for f1 in arquivos {
             
@@ -74,13 +74,13 @@ class StringFilesManager: NSObject {
                     
                     firstfileKeys = stringKeys(file: file1)
                     secondFileKeys = stringKeys(file: file2)
-                
+                    
                     let fil:File?
                     
                     if let parent1 = f1.parent?.name.components(separatedBy: "/").first, let parent2 = f2.parent?.name.components(separatedBy: "/").first {
                         print("\(parent1) to \(parent2)")
                         
-                        fil = try! folder.createFile(named: "\(parent1) to \(parent2).txt")
+                        fil = try! missingFolder.createFile(named: "\(parent1) to \(parent2).txt")
                         
                         for line in self.getMissingLines(firstFileKeys: firstfileKeys, secondFileKeys: secondFileKeys) {
                             try! fil?.append(string: "\(line.key) = \(line.value)")
