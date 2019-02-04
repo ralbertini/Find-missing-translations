@@ -1,5 +1,5 @@
 //
-//  StringManipulation.swift
+//  StringFilesManager
 //  DiffTranslations
 //
 //  Created by Ronaldo Albertini on 09/01/19.
@@ -19,7 +19,6 @@ class StringFilesManager: NSObject {
     private func getAllStringFiles() {
         
         let folder:Folder = Folder.current
-        print(folder.description)
         folder.makeFileSequence(recursive: true, includeHidden: false).forEach { file in
             if let ext = file.extension, ext == "strings" {
                 stringFiles.append(file)
@@ -39,7 +38,7 @@ class StringFilesManager: NSObject {
         }
     }
     
-    private func stringKeys(file: FileReader) -> Dictionary<String,String> {
+    private func getStringKeys(file: FileReader) -> Dictionary<String,String> {
         
         var lineTuple:Dictionary<String,String> = Dictionary<String,String>()
         
@@ -56,15 +55,15 @@ class StringFilesManager: NSObject {
         return lineTuple
     }
     
-    private func rodarPorNomesArquivos(arquivos: [File]) {
+    private func compareFileContent(filesToCompare: [File]) {
         
         let folder = Folder.current
         
         guard let missingFolder = try? folder.createSubfolderIfNeeded(withName: "missingTranslations") else { return }
         
-        for f1 in arquivos {
+        for f1 in filesToCompare {
             
-            for f2 in arquivos {
+            for f2 in filesToCompare {
                 
                 if f2.path != f1.path {
                     
@@ -72,19 +71,25 @@ class StringFilesManager: NSObject {
                         return
                     }
                     
-                    firstfileKeys = stringKeys(file: file1)
-                    secondFileKeys = stringKeys(file: file2)
+                    firstfileKeys = getStringKeys(file: file1)
+                    secondFileKeys = getStringKeys(file: file2)
                     
-                    let fil:File?
-                    
-                    if let parent1 = f1.parent?.name.components(separatedBy: "/").first, let parent2 = f2.parent?.name.components(separatedBy: "/").first {
-                        print("\(parent1) to \(parent2)")
+                    if !firstfileKeys.isEmpty && !secondFileKeys.isEmpty {
                         
-                        fil = try! missingFolder.createFile(named: "\(parent1) to \(parent2).txt")
-                        
-                        for line in self.getMissingLines(firstFileKeys: firstfileKeys, secondFileKeys: secondFileKeys) {
-                            try! fil?.append(string: "\(line.key) = \(line.value)")
-                            print("\(line.key) = \(line.value)")
+                        if let parent1 = f1.parent?.name.components(separatedBy: ".").first, let parent2 = f2.parent?.name.components(separatedBy: ".").first, parent1 != parent2 {
+                            
+                            let missingLines = self.getMissingLines(firstFileKeys: firstfileKeys, secondFileKeys: secondFileKeys)
+                            
+                            if missingLines.count > 0 {
+                                
+                                guard let fil = try? missingFolder.createFile(named: "\(f1.name.components(separatedBy: ".").first ?? "") \(parent1) to \(parent2).txt") else { return }
+                                
+                                print("Generating file: \(f1.name.components(separatedBy: ".").first ?? "") \(parent1) to \(parent2).txt")
+                                
+                                for line in missingLines {
+                                    try! fil.append(string: "\(line.key) = \(line.value)\n")
+                                }
+                            }
                         }
                     }
                 }
@@ -95,24 +100,24 @@ class StringFilesManager: NSObject {
     private func getMissingLines(firstFileKeys: Dictionary<String,String>, secondFileKeys: Dictionary<String,String>) -> Dictionary<String,String> {
         
         let missingKeys:[String] = firstfileKeys.keys.filter { !secondFileKeys.keys.contains($0)}
-        
         var missingTranslations: Dictionary<String, String> = Dictionary<String, String>()
         
         for key in missingKeys {
-            missingTranslations[key] = firstFileKeys[key]
             
+            missingTranslations[key] = firstFileKeys[key]
         }
+        
         return missingTranslations
     }
     
     
-    public func teste() {
+    public func run() {
         
         self.getAllStringFiles()
         self.findSameFiles()
         
         for files in self.sameFiles {
-            self.rodarPorNomesArquivos(arquivos: files.value)
+            self.compareFileContent(filesToCompare: files.value)
         }
     }
 }
