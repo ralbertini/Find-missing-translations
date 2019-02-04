@@ -19,7 +19,6 @@ class StringFilesManager: NSObject {
     private func getAllStringFiles() {
         
         let folder:Folder = Folder.current
-
         folder.makeFileSequence(recursive: true, includeHidden: false).forEach { file in
             if let ext = file.extension, ext == "strings" {
                 stringFiles.append(file)
@@ -39,7 +38,7 @@ class StringFilesManager: NSObject {
         }
     }
     
-    private func stringKeys(file: FileReader) -> Dictionary<String,String> {
+    private func getStringKeys(file: FileReader) -> Dictionary<String,String> {
         
         var lineTuple:Dictionary<String,String> = Dictionary<String,String>()
         
@@ -72,21 +71,24 @@ class StringFilesManager: NSObject {
                         return
                     }
                     
-                    firstfileKeys = stringKeys(file: file1)
-                    secondFileKeys = stringKeys(file: file2)
+                    firstfileKeys = getStringKeys(file: file1)
+                    secondFileKeys = getStringKeys(file: file2)
                     
-                    if let parent1 = f1.parent?.name.components(separatedBy: "/").first?.components(separatedBy: ".").first
-                        , let parent2 = f2.parent?.name.components(separatedBy: "/").first?.components(separatedBy: ".").first {
+                    if !firstfileKeys.isEmpty && !secondFileKeys.isEmpty {
                         
-                        guard let fil = try? missingFolder.createFile(named: "\(f1.name.components(separatedBy: ".").first ?? "Translate")_\(parent1.uppercased())_to_\(parent2.uppercased()).txt") else { return }
-                        
-                        for line in self.getMissingLines(firstFileKeys: firstfileKeys, secondFileKeys: secondFileKeys) {
+                        if let parent1 = f1.parent?.name.components(separatedBy: ".").first, let parent2 = f2.parent?.name.components(separatedBy: ".").first, parent1 != parent2 {
                             
-                            do {
-                                try fil.append(string: "\(line.key) = \(line.value)")
-                                print("\(line.key) = \(line.value)")
-                            } catch {
-                                print("Problems to write on file")
+                            let missingLines = self.getMissingLines(firstFileKeys: firstfileKeys, secondFileKeys: secondFileKeys)
+                            
+                            if missingLines.count > 0 {
+                                
+                                guard let fil = try? missingFolder.createFile(named: "\(f1.name.components(separatedBy: ".").first ?? "") \(parent1) to \(parent2).txt") else { return }
+                                
+                                print("Generating file: \(f1.name.components(separatedBy: ".").first ?? "") \(parent1) to \(parent2).txt")
+                                
+                                for line in missingLines {
+                                    try! fil.append(string: "\(line.key) = \(line.value)\n")
+                                }
                             }
                         }
                     }
@@ -98,7 +100,6 @@ class StringFilesManager: NSObject {
     private func getMissingLines(firstFileKeys: Dictionary<String,String>, secondFileKeys: Dictionary<String,String>) -> Dictionary<String,String> {
         
         let missingKeys:[String] = firstfileKeys.keys.filter { !secondFileKeys.keys.contains($0)}
-        
         var missingTranslations: Dictionary<String, String> = Dictionary<String, String>()
         
         for key in missingKeys {
